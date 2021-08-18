@@ -3,10 +3,10 @@ package com.example.moviebuddy.viewmodels;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
-import java.util.List;
-
 import com.example.moviebuddy.models.PopularMovieModel;
 import com.example.moviebuddy.repositories.PopularMoviesRepository;
+
+import retrofit2.Response;
 
 public class MovieRecyclerviewModel extends ViewModel {
 
@@ -21,7 +21,7 @@ public class MovieRecyclerviewModel extends ViewModel {
 
 
     //Gets the Live Data from the repository
-    public LiveData<List<PopularMovieModel>> getPopularMovies() {
+    public LiveData<Response<PopularMovieModel>> getPopularMovies() {
 
         return popularMoviesRepository.getPopularMovies();
     }

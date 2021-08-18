@@ -6,7 +6,9 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.moviebuddy.R;
@@ -19,7 +21,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import com.example.moviebuddy.utils.MovieApi;
+import com.example.moviebuddy.request.ApiService;
+import com.example.moviebuddy.request.MovieApiClient;
 import com.example.moviebuddy.utils.credentials;
 import com.example.moviebuddy.viewmodels.MovieRecyclerviewModel;
 
@@ -27,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String tag = "MainActivity";
     private MovieRecyclerviewModel movieRecyclerviewModel;
+
+    private MovieApiClient movieApiClient;
 
     private static final String category = "popular";
     public String posterPath;
@@ -46,8 +51,28 @@ public class MainActivity extends AppCompatActivity {
 
         movieRecyclerviewModel = new ViewModelProvider(this).get(MovieRecyclerviewModel.class);
 
+        movieApiClient = MovieApiClient.getInstance();
+        movieApiClient.callMoviesApi();
+//
+//            Log.i(tag, "response" + movieApiClient.imageUrl);
 
-        callListOfMoviesApi(MainActivity.this);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//        Log.i(tag,"response" +  MovieApiClient.getInstance().getPopularMovies().getValue() );
+
+//        callListOfMoviesApi(MainActivity.this);
 
 
 //        Toast.makeText(MainActivity.this, "response" + imageConfigurationPath, Toast.LENGTH_LONG).show();
@@ -55,15 +80,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Observing for any data change
-    private void observeAnyChange(){
-        movieRecyclerviewModel.getPopularMovies().observe(this, new Observer<List<PopularMovieModel>>() {
-            @Override
-            public void onChanged(List<PopularMovieModel> popularMovieModels) {
-                // update UI
-
-            }
-        });
-    }
+//    private void observeAnyChange(){
+//        movieRecyclerviewModel.getPopularMovies().observe(this, new Observer<PopularMovieModel>() {
+//            @Override
+//            public void onChanged(PopularMovieModel popularMovieModels) {
+//                // update UI
+//
+//            }
+//        });
+//    }
 
 
 
@@ -74,9 +99,9 @@ public class MainActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        MovieApi movieApi = retrofit.create(MovieApi.class);
+        ApiService apiService = retrofit.create(ApiService.class);
 
-        Call<PopularMovieModel> call = movieApi.listOfMovies(category, credentials.ApiKey);
+        Call<PopularMovieModel> call = apiService.listOfMovies(category, credentials.ApiKey);
 
 
         call.enqueue(new Callback<PopularMovieModel>() {
@@ -85,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
                 PopularMovieModel result = response.body();
 
                 posterPath = result.getResults().get(0).getPosterPath();
-//        Toast.makeText(context, "response" + posterPath, Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "response" + response.body().getResults(), Toast.LENGTH_LONG).show();
 
                 Glide.with(getBaseContext())
                         .load(imageConfigurationPath + posterPath)
@@ -103,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
 
     //This method currently holds the data relevant to building image URLs
     //I Can't find a way to store the fucntion value in a global variable yet
-    // so i'll be commenting this method and pass the imageConfigurationPath explicity for now
+    // so i'll be commenting this method and pass the imageConfigurationPath explicitly for now
 //    public void callImageConfigurationApi() {
 //        Retrofit retrofit = new Retrofit.Builder()
 //                .baseUrl(credentials.BaseUrl)

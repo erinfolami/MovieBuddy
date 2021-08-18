@@ -1,4 +1,4 @@
-package com.example.moviebuddy.utils;
+package com.example.moviebuddy.request;
 
 import com.example.moviebuddy.models.ImageConfigurationModel;
 import com.example.moviebuddy.models.PopularMovieModel;
@@ -7,7 +7,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-public interface MovieApi {
+public interface ApiService {
 
     @GET("/3/movie/{category}")
     Call<PopularMovieModel> listOfMovies(
